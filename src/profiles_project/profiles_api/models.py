@@ -8,14 +8,14 @@ from django.contrib.auth.models import BaseUserManager
 class UserProfileManager(BaseUserManager):
     """Helps Django work with custom user model"""
 
-    def create_user(self, name, email, password=None):
+    def create_user(self, email, name, password=None):
         """Creates a new user profile object"""
 
         if not email:
             raise ValueError("users must have an email address.")
 
-        email = self.normalizeEmail(email)
-        user = self.model(email=email, name=name)
+        email = self.normalize_email(email)
+        user = self.model(email=email, name=name,)
 
         user.set_password(password)
         user.save(using=self._db)
@@ -28,8 +28,11 @@ class UserProfileManager(BaseUserManager):
         user = self.create_user(email, name, password)
 
         user.is_superuser = True
-        self.is_staff = True
+        user.is_staff = True
+
         user.save(using=self._db)
+
+        return user
 
 
 class UserProfile(AbstractBaseUser, PermissionsMixin):
@@ -48,7 +51,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     def get_full_name(self):
          """This function is used to get full name"""
 
-         return
+         return self.name
 
     def get_short_name(self):
         """Used to get user short name"""

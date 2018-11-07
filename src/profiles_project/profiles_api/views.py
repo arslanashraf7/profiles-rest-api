@@ -1,13 +1,16 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
+from . import serializers
+from rest_framework import status
 # Create your views here.
 
 class HelloApiView(APIView):
-     """Test api view"""
+    """Test api view"""
 
-     def get(self, request, format=None):
+    serializer_class = serializers.HelloSerializer
+
+    def get(self, request, format=None):
          """This returns the data that we want to return"""
 
          an_apiView = [
@@ -19,3 +22,31 @@ class HelloApiView(APIView):
 
 
          return Response({'message': 'Hello!', 'an_apiView': an_apiView})
+
+    def post(self, request):
+        """This is a test post function"""
+
+        serializer = serializers.HelloSerializer(data=request.data)
+
+        if serializer.is_valid():
+            name = serializer.data.get('name')
+            message = 'Hello {0}'.format(name)
+            return Response({'message': message})
+        else:
+            return Response(
+                serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, pk=None):
+        """Updating the objects"""
+
+        return Response({'methond': 'put'})
+
+    def patch(self, request, pk=None):
+        """This is a patch test request"""
+
+        return Response({'method': 'patch'})
+
+    def delete(self, request, pk=None):
+        """Delete test request"""
+
+        return Response({'method': 'delete'})

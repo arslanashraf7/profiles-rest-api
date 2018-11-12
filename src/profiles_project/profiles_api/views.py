@@ -6,6 +6,8 @@ from rest_framework import status
 from rest_framework import viewsets
 # Create your views here.
 from . import models
+from . import permissions
+from rest_framework.authentication import TokenAuthentication
 
 class HelloApiView(APIView):
     """Test api view"""
@@ -106,5 +108,6 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     """Handles create,read and updatation of profiles"""
 
     serializer_class = serializers.UserProfileSerializer
-
     queryset = models.UserProfile.objects.all()
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (permissions.UpdateOwnProfile,)
